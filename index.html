@@ -1,73 +1,414 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root { --primary: #059669; }
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: #f8fafc; 
-            display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; 
-        }
-        .card { 
-            background: white; padding: 30px; border-radius: 24px; 
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); width: 320px; text-align: center; 
-        }
-        #box { 
-            width: 120px; height: 120px; margin: 20px auto; border-radius: 20px; 
-            transition: background 0.5s ease; border: 4px solid #e2e8f0;
-        }
-        input { 
-            width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 12px; 
-            box-sizing: border-box; margin-bottom: 10px; font-size: 16px; outline: none;
-        }
-        button { 
-            width: 100%; padding: 12px; background: var(--primary); color: white; 
-            border: none; border-radius: 12px; font-weight: 700; cursor: pointer; 
-        }
-        #skor { font-weight: 700; color: var(--primary); margin-bottom: 10px; }
-    </style>
-</head>
-<body>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Color Master Game</title>
 
-<div class="card">
-    <div id="skor">Skor: 0</div>
-    <div id="box"></div>
-    <p>Apa nama warna ini?</p>
-    <input type="text" id="jawaban" placeholder="Contoh: red">
-    <button onclick="cek()">Cek Jawaban di sini, njing</button>
-    <p id="hasil" style="font-size: 14px; margin-top: 15px;"></p>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --primary:#10b981;
+  --dark:#0f172a;
+  --muted:#64748b;
+  --card:rgba(255,255,255,.9);
+  --danger:#ef4444;
+  --warning:#f59e0b;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:'Inter',sans-serif;
+  background:
+    radial-gradient(circle at top left,#34d399 0,#0f172a 32%,#020617 100%);
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+
+.app{
+  width:100%;
+  max-width:460px;
+}
+
+.card{
+  background:var(--card);
+  color:var(--dark);
+  border-radius:28px;
+  padding:24px;
+  box-shadow:0 25px 70px rgba(0,0,0,.35);
+  backdrop-filter:blur(20px);
+}
+
+.header{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+.header h1{
+  margin:0;
+  font-size:28px;
+  font-weight:800;
+}
+
+.header p{
+  margin:8px 0 0;
+  color:var(--muted);
+  font-size:14px;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-bottom:18px;
+}
+
+.stat{
+  background:#f1f5f9;
+  border-radius:16px;
+  padding:12px;
+  text-align:center;
+}
+
+.stat b{
+  display:block;
+  font-size:20px;
+}
+
+.stat span{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.mode{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:18px;
+}
+
+.mode button{
+  background:#e2e8f0;
+  color:#0f172a;
+}
+
+.mode button.active{
+  background:var(--primary);
+  color:white;
+}
+
+.color-box{
+  width:150px;
+  height:150px;
+  border-radius:34px;
+  margin:18px auto;
+  border:8px solid #e2e8f0;
+  box-shadow:0 18px 40px rgba(0,0,0,.18);
+  transition:.35s ease;
+}
+
+.question{
+  text-align:center;
+  font-size:18px;
+  font-weight:700;
+  margin:10px 0 16px;
+}
+
+.options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+input{
+  width:100%;
+  padding:15px;
+  border:2px solid #e2e8f0;
+  border-radius:16px;
+  font-size:16px;
+  outline:none;
+  margin-bottom:10px;
+}
+
+input:focus{
+  border-color:var(--primary);
+}
+
+button{
+  width:100%;
+  border:0;
+  border-radius:16px;
+  padding:14px;
+  font-size:15px;
+  font-weight:800;
+  cursor:pointer;
+  transition:.2s;
+}
+
+button:hover{
+  transform:translateY(-2px);
+}
+
+.primary{
+  background:var(--primary);
+  color:white;
+}
+
+.secondary{
+  background:#0f172a;
+  color:white;
+}
+
+.option{
+  background:#f8fafc;
+  color:#0f172a;
+  border:2px solid #e2e8f0;
+}
+
+.result{
+  min-height:24px;
+  text-align:center;
+  margin-top:14px;
+  font-weight:700;
+}
+
+.footer{
+  margin-top:14px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.hidden{
+  display:none;
+}
+
+@media(max-width:420px){
+  .card{
+    padding:18px;
+    border-radius:22px;
+  }
+
+  .header h1{
+    font-size:24px;
+  }
+
+  .color-box{
+    width:125px;
+    height:125px;
+    border-radius:26px;
+  }
+
+  .stats{
+    gap:8px;
+  }
+
+  .stat b{
+    font-size:18px;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+  <div class="card">
+    <div class="header">
+      <h1>Color Master</h1>
+      <p>Game tebak warna modern, responsif, dan punya beberapa mode.</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <b id="score">0</b>
+        <span>Skor</span>
+      </div>
+      <div class="stat">
+        <b id="time">30</b>
+        <span>Waktu</span>
+      </div>
+      <div class="stat">
+        <b id="level">1</b>
+        <span>Level</span>
+      </div>
+    </div>
+
+    <div class="mode">
+      <button id="btnOption" class="active" onclick="setMode('option')">Pilihan</button>
+      <button id="btnType" onclick="setMode('type')">Ketik</button>
+    </div>
+
+    <div id="box" class="color-box"></div>
+
+    <div class="question" id="question">Apa nama warna ini?</div>
+
+    <div id="optionArea" class="options"></div>
+
+    <div id="typeArea" class="hidden">
+      <input type="text" id="answer" placeholder="Ketik nama warna, contoh: red" />
+      <button class="primary" onclick="checkTyped()">Cek Jawaban</button>
+    </div>
+
+    <div id="result" class="result"></div>
+
+    <div class="footer">
+      <button class="secondary" onclick="startGame()">Mulai Ulang</button>
+      <button class="primary" onclick="nextColor()">Lewati</button>
+    </div>
+  </div>
 </div>
 
 <script>
-    const warna = ["red", "blue", "green", "yellow", "purple", "orange"];
-    let target = "", skor = 0;
+const colors = [
+  { name:"red", value:"#ef4444" },
+  { name:"blue", value:"#3b82f6" },
+  { name:"green", value:"#22c55e" },
+  { name:"yellow", value:"#eab308" },
+  { name:"purple", value:"#8b5cf6" },
+  { name:"orange", value:"#f97316" },
+  { name:"pink", value:"#ec4899" },
+  { name:"cyan", value:"#06b6d4" },
+  { name:"black", value:"#111827" },
+  { name:"brown", value:"#92400e" }
+];
 
-    function gantiWarna() {
-        target = warna[Math.floor(Math.random() * warna.length)];
-        document.getElementById("box").style.backgroundColor = target;
-        document.getElementById("hasil").innerHTML = "";
+let target = null;
+let score = 0;
+let level = 1;
+let timeLeft = 30;
+let timer = null;
+let mode = "option";
+
+const box = document.getElementById("box");
+const scoreEl = document.getElementById("score");
+const timeEl = document.getElementById("time");
+const levelEl = document.getElementById("level");
+const resultEl = document.getElementById("result");
+const optionArea = document.getElementById("optionArea");
+const typeArea = document.getElementById("typeArea");
+const answerInput = document.getElementById("answer");
+
+function randomItem(arr){
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function shuffle(arr){
+  return [...arr].sort(() => Math.random() - 0.5);
+}
+
+function setMode(selected){
+  mode = selected;
+
+  document.getElementById("btnOption").classList.toggle("active", mode === "option");
+  document.getElementById("btnType").classList.toggle("active", mode === "type");
+
+  optionArea.classList.toggle("hidden", mode !== "option");
+  typeArea.classList.toggle("hidden", mode !== "type");
+
+  nextColor();
+}
+
+function startGame(){
+  score = 0;
+  level = 1;
+  timeLeft = 30;
+
+  updateStats();
+  clearInterval(timer);
+
+  timer = setInterval(() => {
+    timeLeft--;
+    updateStats();
+
+    if(timeLeft <= 0){
+      clearInterval(timer);
+      resultEl.textContent = `Game selesai! Skor akhir kamu: ${score}`;
+      resultEl.style.color = "#0f172a";
+      optionArea.innerHTML = "";
+    }
+  }, 1000);
+
+  nextColor();
+}
+
+function updateStats(){
+  scoreEl.textContent = score;
+  levelEl.textContent = level;
+  timeEl.textContent = timeLeft;
+}
+
+function nextColor(){
+  if(timeLeft <= 0) return;
+
+  target = randomItem(colors);
+  box.style.background = target.value;
+  resultEl.textContent = "";
+  answerInput.value = "";
+
+  if(mode === "option"){
+    renderOptions();
+  }
+}
+
+function renderOptions(){
+  const wrongOptions = colors
+    .filter(color => color.name !== target.name)
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 3);
+
+  const options = shuffle([target, ...wrongOptions]);
+
+  optionArea.innerHTML = options.map(color => `
+    <button class="option" onclick="checkAnswer('${color.name}')">
+      ${color.name.toUpperCase()}
+    </button>
+  `).join("");
+}
+
+function checkTyped(){
+  const userAnswer = answerInput.value.trim().toLowerCase();
+  checkAnswer(userAnswer);
+}
+
+function checkAnswer(answer){
+  if(timeLeft <= 0) return;
+
+  if(answer === target.name){
+    score++;
+    resultEl.textContent = "✅ Benar! Lanjut ke warna berikutnya.";
+    resultEl.style.color = "#10b981";
+
+    if(score % 5 === 0){
+      level++;
+      timeLeft += 5;
     }
 
-    function cek() {
-        let input = document.getElementById("jawaban").value.toLowerCase();
-        let hasil = document.getElementById("hasil");
-        
-        if (input === target) {
-            skor++;
-            hasil.innerHTML = "✅ Benar Anjing! Lanjut...";
-            hasil.style.color = "#059669";
-            document.getElementById("skor").innerHTML = "Skor: " + skor;
-            setTimeout(gantiWarna, 800);
-        } else {
-            hasil.innerHTML = "❌ Salah Kontol, coba lagi!";
-            hasil.style.color = "#e11d48";
-        }
-        document.getElementById("jawaban").value = "";
-    }
+    updateStats();
+    setTimeout(nextColor, 600);
+  }else{
+    resultEl.textContent = `❌ Salah. Jawaban yang benar: ${target.name.toUpperCase()}`;
+    resultEl.style.color = "#ef4444";
+    timeLeft = Math.max(0, timeLeft - 2);
+    updateStats();
+  }
+}
 
-    gantiWarna();
+answerInput.addEventListener("keydown", function(e){
+  if(e.key === "Enter"){
+    checkTyped();
+  }
+});
+
+startGame();
 </script>
-
 </body>
 </html>
